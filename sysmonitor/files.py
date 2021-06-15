@@ -61,11 +61,12 @@ def _get_file_size(path, file, measure = filesystem['measure']):
 def _get_time(path, time_type = 'c'):
     try:
         if time_type == 'c':
-            time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(os.path.getctime(path)))
+            return time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(os.path.getctime(path)))
         if time_type == 'm':
-            time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(os.path.getmtime(path)))
+            return time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(os.path.getmtime(path)))
     except Exception as err:
         logging.error(f'[File]: {path} issue ' + str(err))
+    
 
 def get_folder_info(dirpath, dirnames, filenames):
     file = {}
