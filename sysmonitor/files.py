@@ -1,4 +1,4 @@
-import os, time, logging, configparser, csv
+import os, time, logging, configparser, psutil
 # Setting
 logging.basicConfig(filename='log/app.log', filemode='w',format='[%(levelname)s][%(name)s][%(asctime)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
@@ -68,8 +68,9 @@ def _get_time(path, time_type = 'c'):
         logging.error(f'[File]: {path} issue ' + str(err))
     
 
-def get_folder_info(dirpath, dirnames, filenames):
+def get_folder_info(root_disk, dirpath, dirnames, filenames):
     file = {}
+    file['root'] = root_disk
     file['name'] = _get_name(dirpath)
     file['path'] = dirpath
     file['parent'] = _get_parent_path(dirpath)
@@ -85,8 +86,9 @@ def get_folder_info(dirpath, dirnames, filenames):
 
     return file
 
-def get_file_info(dirpath, filename):
+def get_file_info(root_disk, dirpath, filename):
     file = {}
+    file['root'] = root_disk
     file['name'] = filename
     file['path'] = os.path.join(dirpath, filename)
     file['parent'] = dirpath
@@ -101,3 +103,13 @@ def get_file_info(dirpath, filename):
     file['updated_at'] = _get_time(file['path'], 'm')
 
     return file
+
+def get_total_space(root_disk = 'C:\\', measure = filesystem['measure']):
+    measure_index = _get_measure_index(measure)
+    total_info = {}
+    total_info['root'] = root_disk
+    total_info['total'] = psutil.disk_usage(root_disk).total / measure_index
+    total_info['used'] = psutil.disk_usage(root_disk).used / measure_index
+    total_info['free'] = psutil.disk_usage(root_disk).free / measure_index    
+    
+    return total_info
